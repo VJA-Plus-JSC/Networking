@@ -56,7 +56,9 @@ public enum Signature {
 
 public extension BaseRequest {
   
-  func urlRequest(singed signature: Signature? = nil) throws -> URLRequest {
+  func urlRequest(
+    singed signature: Signature? = .plain("Classclap2022-iOS")
+  ) throws -> URLRequest {
     // encode url (to encode spaces for example)
     guard
       var encodedUrl = self
