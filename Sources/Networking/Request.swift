@@ -8,7 +8,8 @@ public protocol BaseRequest {
   var authorization: Networking.Authorization? { get set }
   var cachePolicy: URLRequest.CachePolicy { get set }
   var parameters: [String : Any?]? { get set }
-  
+  var headers: [(key: String, value: String)] { get set }
+  var signature: Signature? { get set }
   init()
 }
 
@@ -24,7 +25,9 @@ public extension BaseRequest {
     timeout: TimeInterval = 10.0,
     authorization: Authorization? = nil,
     cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy,
-    parameters: [String : Any?]? = nil
+    parameters: [String : Any?]? = nil,
+    signature: Signature? = nil,
+    headers: [(key: String, value: String)] = []
   ) {
     self.init()
     self.baseURL = encodedUrl
@@ -32,7 +35,8 @@ public extension BaseRequest {
     self.timeOut = timeout
     self.authorization = authorization
     self.cachePolicy = cachePolicy
-    
+    self.signature = signature
+    self.headers = headers
     self.parameters = parameters
   }
 }
@@ -56,10 +60,7 @@ public enum Signature {
 
 public extension BaseRequest {
   
-  func urlRequest(
-    singed signature: Signature? = .plain("Classclap2022-iOS"),
-    additionalHeaderFields: [(key: String, value: String)] = []
-  ) throws -> URLRequest {
+  func urlRequest() throws -> URLRequest {
     // encode url (to encode spaces for example)
     guard
       var encodedUrl = self
@@ -93,7 +94,7 @@ public extension BaseRequest {
       request.setValue(keyword, forHTTPHeaderField: "Signature")
     }
     
-    additionalHeaderFields.forEach { pair in
+    headers.forEach { pair in
       request.setValue(pair.value, forHTTPHeaderField: pair.key)
     }
     
@@ -171,6 +172,7 @@ public extension BaseRequest {
 }
 
 public final class Request: BaseRequest, @unchecked Sendable {
+  
   public var cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy
   
   public var baseURL: String = ""
@@ -182,6 +184,10 @@ public final class Request: BaseRequest, @unchecked Sendable {
   public var timeOut: TimeInterval = 60.0
   
   public var authorization: Networking.Authorization? = nil
+  
+  public var headers: [(key: String, value: String)] = []
+  
+  public var signature: Signature? = nil
   
   public required init() { }
 }
