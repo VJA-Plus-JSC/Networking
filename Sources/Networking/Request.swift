@@ -41,7 +41,7 @@ public enum Signature {
   case md5(String)
   case plain(String)
   
-  var plain: String {
+  var content: String {
     switch self {
     case .md5(let secret):
       let digest = Insecure.MD5.hash(data: secret.data(using: .utf8) ?? Data())
@@ -57,7 +57,8 @@ public enum Signature {
 public extension BaseRequest {
   
   func urlRequest(
-    singed signature: Signature? = .plain("Classclap2022-iOS")
+    singed signature: Signature? = .plain("Classclap2022-iOS"),
+    additionalHeaderFields: [(key: String, value: String)] = []
   ) throws -> URLRequest {
     // encode url (to encode spaces for example)
     guard
@@ -69,7 +70,7 @@ public extension BaseRequest {
     }
     
     if let signature = signature, case .md5(_) = signature {
-      let signatureString = signature.plain
+      let signatureString = signature.content
       encodedUrl = "\(encodedUrl)&signature=\(signatureString)"
     }
     
@@ -90,6 +91,10 @@ public extension BaseRequest {
     
     if case .plain(let keyword) = signature {
       request.setValue(keyword, forHTTPHeaderField: "Signature")
+    }
+    
+    additionalHeaderFields.forEach { pair in
+      request.setValue(pair.value, forHTTPHeaderField: pair.key)
     }
     
     var configParameters = parameters
