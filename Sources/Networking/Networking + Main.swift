@@ -36,6 +36,13 @@ public extension Networking {
         let statusCode = HTTPStatus(response.statusCode)
         
         if case .success = statusCode {
+            if let responseString = String(bytes: responseBody, encoding: .utf8) {
+                debugPrint(responseString)
+            } else {
+                // Otherwise print a hex dump of the body.
+                debugPrint("😳 hex dump of the body")
+                debugPrint(responseBody as NSData)
+            }
           /// success handling
           DispatchQueue.main.async {
             handler(.success(responseBody))
