@@ -37,7 +37,7 @@ public extension Networking {
         
         if case .success = statusCode {
             if let responseString = String(bytes: responseBody, encoding: .utf8) {
-                debugPrint(responseString)
+                debugPrint("\(request) \(responseString)")
             } else {
                 // Otherwise print a hex dump of the body.
                 debugPrint("😳 hex dump of the body")
@@ -51,7 +51,7 @@ public extension Networking {
           /// HTTP server-side error handling
           // Printout the information
           if let responseString = String(bytes: responseBody, encoding: .utf8) {
-            debugPrint(responseString)
+            debugPrint("\(request) \(responseString)")
           } else {
             // Otherwise print a hex dump of the body.
             debugPrint("😳 hex dump of the body")
