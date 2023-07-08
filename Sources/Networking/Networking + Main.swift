@@ -12,7 +12,7 @@ public extension Networking {
     completion handler: @escaping NetworkHandler
   ) {
     do {
-      debugPrint("begin reqest \(request.method) \(request) \(String(describing: request.parameters)) \(String(describing: request.authorization))")
+        debugPrint("begin reqest \(request.method) \(request.baseURL) \(String(describing: request.parameters)) \(String(describing: request.authorization))")
       let request = try request.urlRequest()
       
       session.dataTask(with: request) { data, response, error in
@@ -89,7 +89,7 @@ public extension Networking {
     completion handler: @escaping NetworkGenericHandler<ObjectType>
   ) {
     do {
-        debugPrint("begin reqest \(request.method) \(request) \(String(describing: request.parameters)) \(String(describing: request.authorization))")
+        debugPrint("begin reqest \(request.method) \(request.baseURL) \(String(describing: request.parameters)) \(String(describing: request.authorization))")
       let request = try request.urlRequest()
       
       session.dataTask(with: request) { data, response, error in
