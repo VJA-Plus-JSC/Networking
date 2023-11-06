@@ -121,3 +121,9 @@ extension Networking.NetworkError: LocalizedError {
     }
   }
 }
+
+public struct BaseResponse<T> {
+    public let status: Int
+    public let data: T
+    public let messsage: String
+}

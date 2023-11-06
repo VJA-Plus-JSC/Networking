@@ -10,6 +10,7 @@ public protocol BaseRequest {
     var parameters: [String: Any?]? { get set }
     var headers: [(key: String, value: String)] { get set }
     var signature: Signature? { get set }
+    var paramObject: Encodable? { get set }
     init()
 }
 
@@ -26,6 +27,7 @@ public extension BaseRequest {
         authorization: Authorization? = nil,
         cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy,
         parameters: [String: Any?]? = nil,
+        paramObject: Encodable? = nil,
         signature: Signature? = nil,
         headers: [(key: String, value: String)] = []
     ) {
@@ -38,6 +40,7 @@ public extension BaseRequest {
         self.signature = signature
         self.headers = headers
         self.parameters = parameters
+        self.paramObject = paramObject
     }
 }
 
@@ -144,12 +147,16 @@ public extension BaseRequest {
         }
 
         guard let parameters = configParameters else {
+            if let paramObject {
+                let data = try JSONEncoder().encode(paramObject)
+                request.httpBody = data
+            }
             return request
         }
 
         // only put parameter in HTTP body of a POST request,
         // for GET, add directly to the url
-        
+
         var newParams = parameters
         newParams["lang"] = getLanguageIdentifier()
         switch method {
@@ -192,6 +199,8 @@ public final class Request: BaseRequest, @unchecked Sendable {
     public var method: Networking.Method = .post
 
     public var parameters: [String: Any?]? = nil
+    
+    public var paramObject: Encodable? = nil
 
     public var timeOut: TimeInterval = 60.0
 
