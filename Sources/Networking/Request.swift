@@ -1,6 +1,10 @@
 import Foundation
 import CryptoKit
 
+public class NetworkingConst {
+    public static let timeout: TimeInterval = 30.0
+}
+
 public protocol BaseRequest {
     var baseURL: String { get set }
     var method: Networking.Method { get set }
@@ -23,7 +27,7 @@ public extension BaseRequest {
     init(
         from encodedUrl: String,
         as method: Method = .post,
-        timeout: TimeInterval = 10.0,
+        timeout: TimeInterval = NetworkingConst.timeout,
         authorization: Authorization? = nil,
         cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy,
         parameters: [String: Any?]? = nil,
@@ -202,7 +206,7 @@ public final class Request: BaseRequest, @unchecked Sendable {
     
     public var paramObject: Encodable? = nil
 
-    public var timeOut: TimeInterval = 60.0
+    public var timeOut: TimeInterval = NetworkingConst.timeout
 
     public var authorization: Networking.Authorization? = nil
 
