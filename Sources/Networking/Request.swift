@@ -68,7 +68,10 @@ public enum Signature {
 public extension BaseRequest {
 
     func getLanguageIdentifier() -> String {
-        let localId = Locale.current.identifier
+        var localId = "en"
+        if let lang = Bundle.main.preferredLocalizations.first {
+            localId = lang
+        }
         if localId.count >= 2 {
             let subString = localId.prefix(2)
             return String(subString)
