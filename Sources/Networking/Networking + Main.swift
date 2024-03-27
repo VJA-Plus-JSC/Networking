@@ -51,6 +51,22 @@ public extension Networking {
                             handler(.failure(error))
                         }
                     }
+                } else if case .forbidden = statusCode {
+                    if let responseJson = try? JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],
+                        let code = responseJson["status"] as? Int,
+                       code == 0 {
+                        NotificationCenter.default.post(name: Notification.Name("SUSPENDACCOUNT"), object: nil)
+                    }
+                    DispatchQueue.main.async {
+                        handler(
+                                .failure(
+                                NetworkError
+                                    .httpSeverSideError(responseBody, statusCode: statusCode)
+                            )
+                        )
+                    }
+                    return
+                    
                 } else {
                     /// HTTP server-side error handling
                     // Printout the information
@@ -125,6 +141,22 @@ public extension Networking {
                     DispatchQueue.main.async {
                         handler(.success(responseBody))
                     }
+                } else if case .forbidden = statusCode {
+                    if let responseJson = try? JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],
+                        let code = responseJson["status"] as? Int,
+                       code == 0 {
+                        NotificationCenter.default.post(name: Notification.Name("SUSPENDACCOUNT"), object: nil)
+                    }
+                    DispatchQueue.main.async {
+                        handler(
+                                .failure(
+                                NetworkError
+                                    .httpSeverSideError(responseBody, statusCode: statusCode)
+                            )
+                        )
+                    }
+                    return
+                    
                 } else {
                     /// HTTP server-side error handling
                     // Printout the information
