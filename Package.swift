@@ -17,11 +17,15 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
+        .package(
+            name: "Alamofire",
+            url: "https://github.com/Alamofire/Alamofire.git",
+            .upToNextMajor(from: "5.9.1"))
     ],
     targets: [
         .target(
             name: "Networking",
-            dependencies: []),
+            dependencies: [.product(name: "Alamofire", package: "Alamofire")]),
         .testTarget(
             name: "NetworkingTests",
             dependencies: ["Networking"]),

@@ -144,7 +144,9 @@ public extension Networking {
                 } else if case .forbidden = statusCode {
                     if let responseJson = try? JSONSerialization.jsonObject(with: responseBody, options: []) as? [String: Any],
                         let code = responseJson["status"] as? Int,
-                       code == 0 {
+                       code == 0,
+                       let urlString = request.url?.absoluteString,
+                       !urlString.contains("login") {
                         NotificationCenter.default.post(name: Notification.Name("SUSPENDACCOUNT"), object: nil)
                     }
                     DispatchQueue.main.async {

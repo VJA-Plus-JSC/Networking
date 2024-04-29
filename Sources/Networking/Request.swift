@@ -1,5 +1,6 @@
 import Foundation
 import CryptoKit
+import Alamofire
 
 public class NetworkingConst {
     public static let timeout: TimeInterval = 30.0
@@ -197,7 +198,7 @@ public extension BaseRequest {
     }
 }
 
-public final class Request: BaseRequest, @unchecked Sendable {
+public class Request: BaseRequest, @unchecked Sendable {
 
     public var cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy
 
@@ -218,4 +219,10 @@ public final class Request: BaseRequest, @unchecked Sendable {
     public var signature: Signature? = nil
 
     public required init() { }
+}
+
+extension Request: URLRequestConvertible {
+    public func asURLRequest() throws -> URLRequest {
+        return try urlRequest()
+    }
 }
